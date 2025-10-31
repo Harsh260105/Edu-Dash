@@ -20,7 +20,9 @@ const ParentPage = async () => {
       {/* LEFT - Children's Schedules */}
       <div className="w-full xl:w-2/3">
         <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold mb-4">Children&apos;s Schedules</h1>
+          <h1 className="text-xl font-semibold mb-4">
+            Children&apos;s Schedules
+          </h1>
 
           {students.length === 0 ? (
             <div className="text-center py-8 text-gray-500">

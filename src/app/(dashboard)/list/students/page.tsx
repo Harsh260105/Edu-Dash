@@ -171,4 +171,3 @@ const StudentListPage = async ({
 };
 
 export default StudentListPage;
-

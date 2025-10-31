@@ -1,5 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 
+export const dynamic = "force-dynamic";
+
 const SettingsPage = async () => {
   const { userId, sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
