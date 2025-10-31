@@ -43,3 +43,46 @@ export const adjustScheduleToCurrentWeek = (
     };
   });
 };
+
+// Generate recurring lessons for the entire semester (12 weeks)
+export const generateRecurringLessons = (
+  lessons: { title: string; start: Date; end: Date }[],
+  weeksToGenerate: number = 12
+): { title: string; start: Date; end: Date }[] => {
+  const latestMonday = getLatestMonday();
+  const recurringLessons: { title: string; start: Date; end: Date }[] = [];
+
+  // For each week in the semester
+  for (let week = 0; week < weeksToGenerate; week++) {
+    // For each lesson in the week
+    lessons.forEach((lesson) => {
+      const lessonDayOfWeek = lesson.start.getDay();
+      const daysFromMonday = lessonDayOfWeek === 0 ? 6 : lessonDayOfWeek - 1;
+
+      const adjustedStartDate = new Date(latestMonday);
+      adjustedStartDate.setDate(
+        latestMonday.getDate() + daysFromMonday + week * 7
+      );
+      adjustedStartDate.setHours(
+        lesson.start.getHours(),
+        lesson.start.getMinutes(),
+        lesson.start.getSeconds()
+      );
+
+      const adjustedEndDate = new Date(adjustedStartDate);
+      adjustedEndDate.setHours(
+        lesson.end.getHours(),
+        lesson.end.getMinutes(),
+        lesson.end.getSeconds()
+      );
+
+      recurringLessons.push({
+        title: lesson.title,
+        start: adjustedStartDate,
+        end: adjustedEndDate,
+      });
+    });
+  }
+
+  return recurringLessons;
+};

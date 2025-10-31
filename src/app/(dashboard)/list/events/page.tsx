@@ -1,7 +1,10 @@
 import FormContainer from "@/components/FormContainer";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Event, Prisma } from "@prisma/client";
@@ -17,7 +20,6 @@ const EventListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-
   const { userId, sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
@@ -105,6 +107,9 @@ const EventListPage = async ({
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
+          case "classId":
+            query.classId = value === "null" ? null : parseInt(value);
+            break;
           case "search":
             query.title = { contains: value, mode: "insensitive" };
             break;
@@ -130,6 +135,15 @@ const EventListPage = async ({
     },
   ];
 
+  // Sorting
+  const sortField = queryParams.sort || "startTime";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "asc";
+
+  const orderBy: Prisma.EventOrderByWithRelationInput = {};
+  if (sortField === "startTime" || sortField === "title") {
+    orderBy[sortField] = sortOrder;
+  }
+
   const [data, count] = await prisma.$transaction([
     prisma.event.findMany({
       where: query,
@@ -138,9 +152,29 @@ const EventListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy,
     }),
     prisma.event.count({ where: query }),
   ]);
+
+  // Get classes for filters
+  const classes = await prisma.class.findMany({
+    select: { id: true, name: true },
+  });
+
+  const filterOptions = [
+    { label: "All Classes", value: "null", key: "classId" },
+    ...classes.map((c) => ({
+      label: `Class: ${c.name}`,
+      value: c.id.toString(),
+      key: "classId",
+    })),
+  ];
+
+  const sortOptions = [
+    { label: "Date (Soonest)", value: "startTime" },
+    { label: "Title (A-Z)", value: "title" },
+  ];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -150,13 +184,9 @@ const EventListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            {role === "admin" && <FormContainer table="event" type="create" />}
+            <TableFilter filters={filterOptions} />
+            <TableSort sortOptions={sortOptions} />
+            {role === "admin" && <FormModal table="event" type="create" />}
           </div>
         </div>
       </div>
@@ -169,4 +199,3 @@ const EventListPage = async ({
 };
 
 export default EventListPage;
-

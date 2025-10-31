@@ -2,6 +2,8 @@ import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Prisma, Student } from "@prisma/client";
@@ -120,11 +122,31 @@ const StudentListPage = async ({
           case "search":
             query.name = { contains: value, mode: "insensitive" };
             break;
+          case "classId":
+            query.classId = parseInt(value);
+            break;
+          case "gradeId":
+            query.gradeId = parseInt(value);
+            break;
+          case "sex":
+            query.sex = value as "MALE" | "FEMALE";
+            break;
           default:
             break;
         }
       }
     }
+  }
+
+  // Sorting
+  const sortField = queryParams.sort || "name";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "asc";
+
+  const orderBy: Prisma.StudentOrderByWithRelationInput = {};
+  if (sortField === "name" || sortField === "email" || sortField === "phone") {
+    orderBy[sortField] = sortOrder;
+  } else if (sortField === "class") {
+    orderBy.class = { name: sortOrder };
   }
 
   const [data, count] = await prisma.$transaction([
@@ -135,9 +157,38 @@ const StudentListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy,
     }),
     prisma.student.count({ where: query }),
   ]);
+
+  // Get all classes and grades for filters
+  const [classes, grades] = await prisma.$transaction([
+    prisma.class.findMany({ select: { id: true, name: true } }),
+    prisma.grade.findMany({ select: { id: true, level: true } }),
+  ]);
+
+  const filterOptions = [
+    ...classes.map((c) => ({
+      label: `Class: ${c.name}`,
+      value: c.id.toString(),
+      key: "classId",
+    })),
+    ...grades.map((g) => ({
+      label: `Grade ${g.level}`,
+      value: g.id.toString(),
+      key: "gradeId",
+    })),
+    { label: "Male", value: "MALE", key: "sex" },
+    { label: "Female", value: "FEMALE", key: "sex" },
+  ];
+
+  const sortOptions = [
+    { label: "Name (A-Z)", value: "name" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Class", value: "class" },
+  ];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -147,16 +198,9 @@ const StudentListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            <TableFilter filters={filterOptions} />
+            <TableSort sortOptions={sortOptions} />
             {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              //   <Image src="/plus.png" alt="" width={14} height={14} />
-              // </button>
               <FormContainer table="student" type="create" />
             )}
           </div>

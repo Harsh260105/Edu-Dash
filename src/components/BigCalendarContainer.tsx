@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import BigCalendar from "./BigCalender";
+import { generateRecurringLessons } from "@/lib/utils";
 
 const BigCalendarContainer = async ({
   type,
@@ -21,7 +22,7 @@ const BigCalendarContainer = async ({
     },
   });
 
-  const data = dataRes.map((lesson) => ({
+  const lessons = dataRes.map((lesson) => ({
     title: lesson.name,
     start: lesson.startTime,
     end: lesson.endTime,
@@ -31,9 +32,21 @@ const BigCalendarContainer = async ({
     day: lesson.day,
   }));
 
-  // Show lessons on their actual scheduled dates instead of adjusting to current week
+  // Generate recurring lessons for the next 12 weeks (full semester)
+  const recurringLessons = generateRecurringLessons(lessons, 12);
+
+  // Merge the recurring times with the lesson details
+  const data = recurringLessons.map((recurringLesson, index) => {
+    const originalLesson = lessons[index % lessons.length];
+    return {
+      ...originalLesson,
+      start: recurringLesson.start,
+      end: recurringLesson.end,
+    };
+  });
+
   return (
-    <div className="h-full">
+    <div className="h-full overflow-hidden">
       <BigCalendar data={data} />
     </div>
   );

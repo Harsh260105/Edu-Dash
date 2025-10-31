@@ -2,6 +2,8 @@ import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
@@ -126,11 +128,30 @@ const TeacherListPage = async ({
           case "search":
             query.name = { contains: value, mode: "insensitive" };
             break;
+          case "subjectId":
+            query.subjects = {
+              some: {
+                id: parseInt(value),
+              },
+            };
+            break;
+          case "sex":
+            query.sex = value as "MALE" | "FEMALE";
+            break;
           default:
             break;
         }
       }
     }
+  }
+
+  // Sorting
+  const sortField = queryParams.sort || "name";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "asc";
+
+  const orderBy: Prisma.TeacherOrderByWithRelationInput = {};
+  if (sortField === "name" || sortField === "email" || sortField === "phone") {
+    orderBy[sortField] = sortOrder;
   }
 
   const [data, count] = await prisma.$transaction([
@@ -142,9 +163,37 @@ const TeacherListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy,
     }),
     prisma.teacher.count({ where: query }),
   ]);
+
+  // Get subjects and classes for filters
+  const [subjects, classes] = await prisma.$transaction([
+    prisma.subject.findMany({ select: { id: true, name: true } }),
+    prisma.class.findMany({ select: { id: true, name: true } }),
+  ]);
+
+  const filterOptions = [
+    ...subjects.map((s) => ({
+      label: `Subject: ${s.name}`,
+      value: s.id.toString(),
+      key: "subjectId",
+    })),
+    ...classes.map((c) => ({
+      label: `Class: ${c.name}`,
+      value: c.id.toString(),
+      key: "classId",
+    })),
+    { label: "Male", value: "MALE", key: "sex" },
+    { label: "Female", value: "FEMALE", key: "sex" },
+  ];
+
+  const sortOptions = [
+    { label: "Name (A-Z)", value: "name" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+  ];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -154,12 +203,8 @@ const TeacherListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            <TableFilter filters={filterOptions} />
+            <TableSort sortOptions={sortOptions} />
             {role === "admin" && (
               <FormContainer table="teacher" type="create" />
             )}
@@ -175,4 +220,3 @@ const TeacherListPage = async ({
 };
 
 export default TeacherListPage;
-

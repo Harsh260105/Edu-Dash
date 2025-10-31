@@ -1,7 +1,10 @@
 import FormContainer from "@/components/FormContainer";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma, Subject, Teacher } from "@prisma/client";
@@ -73,11 +76,23 @@ const SubjectListPage = async ({
           case "search":
             query.name = { contains: value, mode: "insensitive" };
             break;
+          case "teacherId":
+            query.teachers = { some: { id: value } };
+            break;
           default:
             break;
         }
       }
     }
+  }
+
+  // Sorting
+  const sortField = queryParams.sort || "name";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "asc";
+
+  const orderBy: Prisma.SubjectOrderByWithRelationInput = {};
+  if (sortField === "name") {
+    orderBy[sortField] = sortOrder;
   }
 
   const [data, count] = await prisma.$transaction([
@@ -88,9 +103,25 @@ const SubjectListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy,
     }),
     prisma.subject.count({ where: query }),
   ]);
+
+  // Get teachers for filters
+  const teachers = await prisma.teacher.findMany({
+    select: { id: true, name: true },
+  });
+
+  const filterOptions = [
+    ...teachers.map((t) => ({
+      label: `Teacher: ${t.name}`,
+      value: t.id,
+      key: "teacherId",
+    })),
+  ];
+
+  const sortOptions = [{ label: "Name (A-Z)", value: "name" }];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -100,15 +131,9 @@ const SubjectListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            {role === "admin" && (
-              <FormContainer table="subject" type="create" />
-            )}
+            <TableFilter filters={filterOptions} />
+            <TableSort sortOptions={sortOptions} />
+            {role === "admin" && <FormModal table="subject" type="create" />}
           </div>
         </div>
       </div>
@@ -121,4 +146,3 @@ const SubjectListPage = async ({
 };
 
 export default SubjectListPage;
-

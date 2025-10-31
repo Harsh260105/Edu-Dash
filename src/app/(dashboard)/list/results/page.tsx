@@ -1,7 +1,10 @@
 import FormContainer from "@/components/FormContainer";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma } from "@prisma/client";
@@ -113,6 +116,12 @@ const ResultListPage = async ({
           case "studentId":
             query.studentId = value;
             break;
+          case "examId":
+            query.examId = parseInt(value);
+            break;
+          case "assignmentId":
+            query.assignmentId = parseInt(value);
+            break;
           case "search":
             query.OR = [
               { exam: { title: { contains: value, mode: "insensitive" } } },
@@ -151,11 +160,20 @@ const ResultListPage = async ({
       break;
   }
 
+  // Sorting
+  const sortField = queryParams.sort || "score";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "desc";
+
+  const orderBy: Prisma.ResultOrderByWithRelationInput = {};
+  if (sortField === "score") {
+    orderBy[sortField] = sortOrder;
+  }
+
   const [dataRes, count] = await prisma.$transaction([
     prisma.result.findMany({
       where: query,
       include: {
-        student: { select: { name: true, surname: true } },
+        student: { select: { name: true, surname: true, id: true } },
         exam: {
           include: {
             lesson: {
@@ -179,9 +197,12 @@ const ResultListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy,
     }),
     prisma.result.count({ where: query }),
   ]);
+
+  const sortOptions = [{ label: "Score (Highest)", value: "score" }];
 
   const data = dataRes.map((item) => {
     const assessment = item.exam || item.assignment;
@@ -211,14 +232,9 @@ const ResultListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            <TableSort sortOptions={sortOptions} />
             {(role === "admin" || role === "teacher") && (
-              <FormContainer table="result" type="create" />
+              <FormModal table="result" type="create" />
             )}
           </div>
         </div>

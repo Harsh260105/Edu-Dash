@@ -1,7 +1,10 @@
 import FormContainer from "@/components/FormContainer";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { auth } from "@clerk/nextjs/server";
@@ -131,6 +134,9 @@ const FeeListPage = async ({
           case "studentId":
             query.studentId = value;
             break;
+          case "status":
+            query.status = value as "PENDING" | "PAID" | "PARTIAL" | "OVERDUE";
+            break;
           case "search":
             query.student = {
               OR: [
@@ -173,6 +179,15 @@ const FeeListPage = async ({
       break;
   }
 
+  // Sorting
+  const sortField = queryParams.sort || "dueDate";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "desc";
+
+  const orderBy: Prisma.FeeRecordOrderByWithRelationInput = {};
+  if (sortField === "dueDate" || sortField === "amountDue") {
+    orderBy[sortField] = sortOrder;
+  }
+
   const [feeRecords, count] = await prisma.$transaction([
     prisma.feeRecord.findMany({
       where: query,
@@ -183,12 +198,42 @@ const FeeListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
-      orderBy: {
-        dueDate: "desc",
-      },
+      orderBy,
     }),
     prisma.feeRecord.count({ where: query }),
   ]);
+
+  // Get data for filters (admin only)
+  let filterOptions: any[] = [];
+  if (role === "admin") {
+    filterOptions = [
+      {
+        label: "Status: Paid",
+        value: "PAID",
+        key: "status",
+      },
+      {
+        label: "Status: Pending",
+        value: "PENDING",
+        key: "status",
+      },
+      {
+        label: "Status: Partial",
+        value: "PARTIAL",
+        key: "status",
+      },
+      {
+        label: "Status: Overdue",
+        value: "OVERDUE",
+        key: "status",
+      },
+    ];
+  }
+
+  const sortOptions = [
+    { label: "Due Date (Newest)", value: "dueDate" },
+    { label: "Amount (Highest)", value: "amountDue" },
+  ];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -200,15 +245,11 @@ const FeeListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            {role === "admin" && (
-              <FormContainer table="feeRecord" type="create" />
+            {filterOptions.length > 0 && (
+              <TableFilter filters={filterOptions} />
             )}
+            <TableSort sortOptions={sortOptions} />
+            {role === "admin" && <FormModal table="feeRecord" type="create" />}
           </div>
         </div>
       </div>
@@ -221,4 +262,3 @@ const FeeListPage = async ({
 };
 
 export default FeeListPage;
-

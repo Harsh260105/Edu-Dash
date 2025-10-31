@@ -1,7 +1,10 @@
 import FormContainer from "@/components/FormContainer";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import TableFilter from "@/components/TableFilter";
+import TableSort from "@/components/TableSort";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Announcement, Class, Prisma } from "@prisma/client";
@@ -10,18 +13,16 @@ import { auth } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
 
-
 type AnnouncementList = Announcement & { class: Class };
 const AnnouncementListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  
   const { userId, sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
-  
+
   const columns = [
     {
       header: "Title",
@@ -45,7 +46,7 @@ const AnnouncementListPage = async ({
         ]
       : []),
   ];
-  
+
   const renderRow = (item: AnnouncementList) => (
     <tr
       key={item.id}
@@ -83,6 +84,9 @@ const AnnouncementListPage = async ({
           case "search":
             query.title = { contains: value, mode: "insensitive" };
             break;
+          case "classId":
+            query.classId = value === "null" ? null : parseInt(value);
+            break;
           default:
             break;
         }
@@ -105,6 +109,15 @@ const AnnouncementListPage = async ({
     },
   ];
 
+  // Sorting
+  const sortField = queryParams.sort || "date";
+  const sortOrder = (queryParams.order as "asc" | "desc") || "desc";
+
+  const orderBy: Prisma.AnnouncementOrderByWithRelationInput = {};
+  if (sortField === "title" || sortField === "date") {
+    orderBy[sortField] = sortOrder;
+  }
+
   const [data, count] = await prisma.$transaction([
     prisma.announcement.findMany({
       where: query,
@@ -113,9 +126,29 @@ const AnnouncementListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy,
     }),
     prisma.announcement.count({ where: query }),
   ]);
+
+  // Get classes for filters
+  const classes = await prisma.class.findMany({
+    select: { id: true, name: true },
+  });
+
+  const filterOptions = [
+    { label: "All Classes", value: "null", key: "classId" },
+    ...classes.map((c) => ({
+      label: `Class: ${c.name}`,
+      value: c.id.toString(),
+      key: "classId",
+    })),
+  ];
+
+  const sortOptions = [
+    { label: "Date (Newest)", value: "date" },
+    { label: "Title (A-Z)", value: "title" },
+  ];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -127,14 +160,10 @@ const AnnouncementListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            <TableFilter filters={filterOptions} />
+            <TableSort sortOptions={sortOptions} />
             {role === "admin" && (
-              <FormContainer table="announcement" type="create" />
+              <FormModal table="announcement" type="create" />
             )}
           </div>
         </div>
@@ -148,4 +177,3 @@ const AnnouncementListPage = async ({
 };
 
 export default AnnouncementListPage;
-

@@ -158,9 +158,13 @@ const SingleTeacherPage = async ({
           </div>
         </div>
         {/* BOTTOM */}
-        <div className="mt-4 bg-white rounded-md p-4 h-[500px]">
-          <h1>Teacher&apos;s Schedule</h1>
-          <BigCalendarContainer type="teacherId" id={teacher.id} />
+        <div className="mt-4 bg-white rounded-md p-4 h-[800px] flex flex-col">
+          <h1 className="text-xl font-semibold">
+            Teacher&apos;s Schedule
+          </h1>
+          <div className="flex-1 min-h-0">
+            <BigCalendarContainer type="teacherId" id={teacher.id} />
+          </div>
         </div>
       </div>
       {/* RIGHT */}

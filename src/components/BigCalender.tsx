@@ -20,7 +20,8 @@ const BigCalendar = ({
     day?: string;
   }[];
 }) => {
-  const [view, setView] = useState<View>(Views.MONTH);
+  const [view, setView] = useState<View>(Views.WEEK);
+  const [date, setDate] = useState(new Date());
   const [tooltip, setTooltip] = useState<{
     visible: boolean;
     content: any;
@@ -30,6 +31,32 @@ const BigCalendar = ({
 
   const handleOnChangeView = (selectedView: View) => {
     setView(selectedView);
+  };
+
+  const handleNavigate = (action: "PREV" | "NEXT" | "TODAY") => {
+    if (action === "TODAY") {
+      setDate(new Date());
+    } else if (action === "PREV") {
+      const newDate = new Date(date);
+      if (view === Views.MONTH) {
+        newDate.setMonth(newDate.getMonth() - 1);
+      } else if (view === Views.WEEK || view === Views.WORK_WEEK) {
+        newDate.setDate(newDate.getDate() - 7);
+      } else {
+        newDate.setDate(newDate.getDate() - 1);
+      }
+      setDate(newDate);
+    } else if (action === "NEXT") {
+      const newDate = new Date(date);
+      if (view === Views.MONTH) {
+        newDate.setMonth(newDate.getMonth() + 1);
+      } else if (view === Views.WEEK || view === Views.WORK_WEEK) {
+        newDate.setDate(newDate.getDate() + 7);
+      } else {
+        newDate.setDate(newDate.getDate() + 1);
+      }
+      setDate(newDate);
+    }
   };
 
   // Custom event component with hover tooltip
@@ -61,23 +88,87 @@ const BigCalendar = ({
   };
 
   return (
-    <div className="relative h-full m-0 p-0">
-      <Calendar
-        localizer={localizer}
-        events={data}
-        startAccessor="start"
-        endAccessor="end"
-        views={["month", "week", "work_week", "day"]}
-        view={view}
-        style={{ height: "100%" }}
-        onView={handleOnChangeView}
-        min={new Date(2025, 1, 0, 8, 0, 0)}
-        max={new Date(2025, 1, 0, 17, 0, 0)}
-        defaultDate={new Date()}
-        components={{
-          event: EventComponent,
-        }}
-      />
+    <div className="relative h-full flex flex-col overflow-hidden">
+      {/* Custom Navigation Toolbar */}
+      <div className="flex items-center justify-between p-3 bg-white border-b border-gray-200 flex-shrink-0">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleNavigate("TODAY")}
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
+          >
+            Today
+          </button>
+          <button
+            onClick={() => handleNavigate("PREV")}
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
+          >
+            ◀
+          </button>
+          <button
+            onClick={() => handleNavigate("NEXT")}
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
+          >
+            ▶
+          </button>
+          <span className="ml-4 text-lg font-semibold text-gray-800">
+            {moment(date).format("MMMM YYYY")}
+          </span>
+        </div>
+        <div className="flex gap-1">
+          <button
+            onClick={() => handleOnChangeView(Views.MONTH)}
+            className={`px-3 py-1.5 text-sm font-medium rounded ${
+              view === Views.MONTH
+                ? "bg-blue-500 text-white"
+                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Month
+          </button>
+          <button
+            onClick={() => handleOnChangeView(Views.WEEK)}
+            className={`px-3 py-1.5 text-sm font-medium rounded ${
+              view === Views.WEEK
+                ? "bg-blue-500 text-white"
+                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Week
+          </button>
+          <button
+            onClick={() => handleOnChangeView(Views.DAY)}
+            className={`px-3 py-1.5 text-sm font-medium rounded ${
+              view === Views.DAY
+                ? "bg-blue-500 text-white"
+                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Day
+          </button>
+        </div>
+      </div>
+
+      {/* Calendar */}
+      <div className="flex-1 overflow-auto min-h-0 pb-6">
+        <Calendar
+          localizer={localizer}
+          events={data}
+          startAccessor="start"
+          endAccessor="end"
+          views={["month", "week", "day"]}
+          view={view}
+          date={date}
+          onNavigate={setDate}
+          style={{ height: "100%", minHeight: "500px" }}
+          onView={handleOnChangeView}
+          min={new Date(2025, 1, 0, 8, 0, 0)}
+          max={new Date(2025, 1, 0, 17, 0, 0)}
+          toolbar={false}
+          components={{
+            event: EventComponent,
+          }}
+        />
+      </div>
 
       {/* Custom Tooltip */}
       {tooltip.visible && tooltip.content && (
