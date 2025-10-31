@@ -37,37 +37,6 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-
-      // Ensure teacher can only grade their own students if they're a teacher
-      if (role === "teacher") {
-        // Check if the student is in a class taught by this teacher
-        const studentLesson = await prisma.student.findFirst({
-          where: { id: result.studentId },
-          include: {
-            class: {
-              include: {
-                lessons: {
-                  where: { teacherId: userId },
-                },
-              },
-            },
-          },
-        });
-
-        if (!studentLesson) {
-          return NextResponse.json(
-            { error: "Student not found" },
-            { status: 404 }
-          );
-        }
-
-        if (!studentLesson.class || studentLesson.class.lessons.length === 0) {
-          return NextResponse.json(
-            { error: "You can only grade students in your classes" },
-            { status: 403 }
-          );
-        }
-      }
     }
 
     // Use a transaction to save all results

@@ -146,51 +146,78 @@ async function main() {
     });
   }
 
-  // LESSON
+  // LESSON - Updated for current semester
   const lessons = [
     {
-      name: "Algebra Basics",
+      name: "Algebra Fundamentals",
       day: Day.MONDAY,
-      startTime: new Date("2025-09-23T08:00:00"),
-      endTime: new Date("2025-09-23T09:00:00"),
+      startTime: new Date("2025-10-28T08:00:00"),
+      endTime: new Date("2025-10-28T09:00:00"),
       subjectId: 1,
       classId: 1,
       teacherId: teachers[0].id,
     },
     {
-      name: "English Literature",
+      name: "Creative Writing Workshop",
       day: Day.MONDAY,
-      startTime: new Date("2025-09-23T09:00:00"),
-      endTime: new Date("2025-09-23T10:00:00"),
+      startTime: new Date("2025-10-28T09:15:00"),
+      endTime: new Date("2025-10-28T10:15:00"),
       subjectId: 2,
       classId: 1,
       teacherId: teachers[0].id,
     },
     {
-      name: "Chemistry Lab",
+      name: "Biology Lab - Cell Structure",
       day: Day.TUESDAY,
-      startTime: new Date("2025-09-24T08:00:00"),
-      endTime: new Date("2025-09-24T09:30:00"),
+      startTime: new Date("2025-10-29T08:00:00"),
+      endTime: new Date("2025-10-29T09:30:00"),
       subjectId: 3,
       classId: 2,
       teacherId: teachers[1].id,
     },
     {
-      name: "World History",
+      name: "World History - Ancient Civilizations",
       day: Day.WEDNESDAY,
-      startTime: new Date("2025-09-25T10:00:00"),
-      endTime: new Date("2025-09-25T11:00:00"),
+      startTime: new Date("2025-10-30T10:00:00"),
+      endTime: new Date("2025-10-30T11:00:00"),
       subjectId: 10,
       classId: 3,
       teacherId: teachers[3].id,
     },
     {
-      name: "Computer Programming",
+      name: "Python Programming Basics",
       day: Day.THURSDAY,
-      startTime: new Date("2025-09-26T13:00:00"),
-      endTime: new Date("2025-09-26T14:30:00"),
+      startTime: new Date("2025-10-31T13:00:00"),
+      endTime: new Date("2025-10-31T14:30:00"),
       subjectId: 8,
       classId: 4,
+      teacherId: teachers[2].id,
+    },
+    {
+      name: "Physical Education - Basketball",
+      day: Day.FRIDAY,
+      startTime: new Date("2025-11-01T11:00:00"),
+      endTime: new Date("2025-11-01T12:00:00"),
+      subjectId: 5,
+      classId: 5,
+      teacherId: teachers[4].id,
+    },
+    {
+      name: "Music Theory & Practice",
+      day: Day.WEDNESDAY,
+      startTime: new Date("2025-10-30T14:00:00"),
+      endTime: new Date("2025-10-30T15:00:00"),
+      subjectId: 7,
+      classId: 6,
+      teacherId: teachers[4].id,
+    },
+    {
+      name: "French Conversation",
+      day: Day.TUESDAY,
+      startTime: new Date("2025-10-29T10:00:00"),
+      endTime: new Date("2025-10-29T11:00:00"),
+      subjectId: 9,
+      classId: 7,
       teacherId: teachers[2].id,
     },
   ];
@@ -868,37 +895,43 @@ async function main() {
     await prisma.student.create({ data: student });
   }
 
-  // EXAM
+  // EXAM - Updated with upcoming exams
   const exams = [
     {
       title: "Mathematics Midterm - Grade 1",
-      startTime: new Date("2025-10-01T09:00:00"),
-      endTime: new Date("2025-10-01T11:00:00"),
+      startTime: new Date("2025-11-15T09:00:00"),
+      endTime: new Date("2025-11-15T11:00:00"),
       lessonId: 1,
     },
     {
-      title: "English Literature Quiz - Grade 1",
-      startTime: new Date("2025-10-02T10:00:00"),
-      endTime: new Date("2025-10-02T11:00:00"),
+      title: "Creative Writing Assessment",
+      startTime: new Date("2025-11-18T10:00:00"),
+      endTime: new Date("2025-11-18T11:30:00"),
       lessonId: 2,
     },
     {
-      title: "Science Lab Test - Grade 2",
-      startTime: new Date("2025-10-03T08:00:00"),
-      endTime: new Date("2025-10-03T10:00:00"),
+      title: "Biology Lab Practical - Grade 2",
+      startTime: new Date("2025-11-20T08:00:00"),
+      endTime: new Date("2025-11-20T10:00:00"),
       lessonId: 3,
     },
     {
-      title: "History Midterm - Grade 3",
-      startTime: new Date("2025-10-08T09:00:00"),
-      endTime: new Date("2025-10-08T11:00:00"),
+      title: "Ancient History Final Exam",
+      startTime: new Date("2025-11-22T09:00:00"),
+      endTime: new Date("2025-11-22T11:00:00"),
       lessonId: 4,
     },
     {
-      title: "Computer Science Final - Grade 4",
-      startTime: new Date("2025-10-15T13:00:00"),
-      endTime: new Date("2025-10-15T15:00:00"),
+      title: "Python Programming Project Demo",
+      startTime: new Date("2025-11-25T13:00:00"),
+      endTime: new Date("2025-11-25T15:30:00"),
       lessonId: 5,
+    },
+    {
+      title: "Physical Fitness Assessment",
+      startTime: new Date("2025-11-27T11:00:00"),
+      endTime: new Date("2025-11-27T12:00:00"),
+      lessonId: 6,
     },
   ];
 
@@ -906,37 +939,43 @@ async function main() {
     await prisma.exam.create({ data: exam });
   }
 
-  // ASSIGNMENT
+  // ASSIGNMENT - Updated with current assignments
   const assignments = [
     {
-      title: "History Essay - World War II",
-      startDate: new Date("2025-09-20"),
-      dueDate: new Date("2025-09-30"),
+      title: "Ancient Egypt Research Paper",
+      startDate: new Date("2025-10-28"),
+      dueDate: new Date("2025-11-10"),
       lessonId: 4,
     },
     {
-      title: "Programming Project - Calculator App",
-      startDate: new Date("2025-09-21"),
-      dueDate: new Date("2025-10-05"),
+      title: "Python Calculator App Project",
+      startDate: new Date("2025-10-29"),
+      dueDate: new Date("2025-11-18"),
       lessonId: 5,
     },
     {
-      title: "Science Experiment Report",
-      startDate: new Date("2025-09-25"),
-      dueDate: new Date("2025-10-02"),
+      title: "Cell Biology Diagram & Report",
+      startDate: new Date("2025-10-30"),
+      dueDate: new Date("2025-11-08"),
       lessonId: 3,
     },
     {
-      title: "English Creative Writing",
-      startDate: new Date("2025-09-28"),
-      dueDate: new Date("2025-10-08"),
+      title: "Short Story Writing - Personal Narrative",
+      startDate: new Date("2025-10-31"),
+      dueDate: new Date("2025-11-12"),
       lessonId: 2,
     },
     {
-      title: "Mathematics Problem Set",
-      startDate: new Date("2025-10-01"),
-      dueDate: new Date("2025-10-10"),
+      title: "Algebraic Equations Problem Set",
+      startDate: new Date("2025-11-01"),
+      dueDate: new Date("2025-11-14"),
       lessonId: 1,
+    },
+    {
+      title: "French Vocabulary & Dialogue Practice",
+      startDate: new Date("2025-10-29"),
+      dueDate: new Date("2025-11-07"),
+      lessonId: 8,
     },
   ];
 
@@ -990,213 +1029,241 @@ async function main() {
     await prisma.result.create({ data: result });
   }
 
-  // ATTENDANCE
+  // ATTENDANCE - Updated with current week attendance
   const attendances = [
-    // Monday attendance for various lessons
+    // Monday (Oct 28) attendance for various lessons
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[0].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[1].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: false,
       studentId: students[2].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[3].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[4].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[5].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[6].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[7].id,
       lessonId: 1,
     },
 
-    // English lesson attendance
+    // Creative Writing lesson attendance
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[0].id,
       lessonId: 2,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[1].id,
       lessonId: 2,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[2].id,
       lessonId: 2,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: false,
       studentId: students[3].id,
       lessonId: 2,
     },
     {
-      date: new Date("2025-09-23"),
+      date: new Date("2025-10-28"),
       present: true,
       studentId: students[4].id,
       lessonId: 2,
     },
 
-    // Tuesday attendance for science lessons
+    // Tuesday (Oct 29) attendance for biology lessons
     {
-      date: new Date("2025-09-24"),
+      date: new Date("2025-10-29"),
       present: true,
       studentId: students[8].id,
       lessonId: 3,
     },
     {
-      date: new Date("2025-09-24"),
+      date: new Date("2025-10-29"),
       present: true,
       studentId: students[9].id,
       lessonId: 3,
     },
     {
-      date: new Date("2025-09-24"),
+      date: new Date("2025-10-29"),
       present: false,
       studentId: students[10].id,
       lessonId: 3,
     },
     {
-      date: new Date("2025-09-24"),
+      date: new Date("2025-10-29"),
       present: true,
       studentId: students[11].id,
       lessonId: 3,
     },
     {
-      date: new Date("2025-09-24"),
+      date: new Date("2025-10-29"),
       present: true,
       studentId: students[12].id,
       lessonId: 3,
     },
 
-    // Wednesday attendance for history lessons
+    // Tuesday French lessons
     {
-      date: new Date("2025-09-25"),
+      date: new Date("2025-10-29"),
+      present: true,
+      studentId: students[18].id,
+      lessonId: 8,
+    },
+    {
+      date: new Date("2025-10-29"),
+      present: true,
+      studentId: students[19].id,
+      lessonId: 8,
+    },
+    {
+      date: new Date("2025-10-29"),
+      present: true,
+      studentId: students[20].id,
+      lessonId: 8,
+    },
+
+    // Wednesday (Oct 30) attendance for history lessons
+    {
+      date: new Date("2025-10-30"),
       present: true,
       studentId: students[13].id,
       lessonId: 4,
     },
     {
-      date: new Date("2025-09-25"),
+      date: new Date("2025-10-30"),
       present: true,
       studentId: students[14].id,
       lessonId: 4,
     },
     {
-      date: new Date("2025-09-25"),
+      date: new Date("2025-10-30"),
       present: true,
       studentId: students[15].id,
       lessonId: 4,
     },
     {
-      date: new Date("2025-09-25"),
+      date: new Date("2025-10-30"),
       present: false,
       studentId: students[16].id,
       lessonId: 4,
     },
     {
-      date: new Date("2025-09-25"),
+      date: new Date("2025-10-30"),
       present: true,
       studentId: students[17].id,
       lessonId: 4,
     },
 
-    // Thursday attendance for computer science lessons
+    // Wednesday Music lessons
     {
-      date: new Date("2025-09-26"),
+      date: new Date("2025-10-30"),
       present: true,
-      studentId: students[18].id,
-      lessonId: 5,
+      studentId: students[16].id,
+      lessonId: 7,
     },
     {
-      date: new Date("2025-09-26"),
+      date: new Date("2025-10-30"),
       present: true,
-      studentId: students[19].id,
-      lessonId: 5,
+      studentId: students[17].id,
+      lessonId: 7,
     },
+
+    // Thursday (Oct 31) attendance for computer science lessons
     {
-      date: new Date("2025-09-26"),
+      date: new Date("2025-10-31"),
       present: true,
-      studentId: students[20].id,
-      lessonId: 5,
-    },
-    {
-      date: new Date("2025-09-26"),
-      present: false,
       studentId: students[21].id,
       lessonId: 5,
     },
     {
-      date: new Date("2025-09-26"),
+      date: new Date("2025-10-31"),
       present: true,
       studentId: students[22].id,
       lessonId: 5,
     },
-
-    // Friday attendance for various lessons
     {
-      date: new Date("2025-09-27"),
+      date: new Date("2025-10-31"),
+      present: true,
+      studentId: students[23].id,
+      lessonId: 5,
+    },
+    {
+      date: new Date("2025-10-31"),
+      present: false,
+      studentId: students[24].id,
+      lessonId: 5,
+    },
+
+    // Previous week attendance for tracking
+    {
+      date: new Date("2025-10-21"),
       present: true,
       studentId: students[0].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-27"),
+      date: new Date("2025-10-21"),
       present: true,
       studentId: students[1].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-27"),
+      date: new Date("2025-10-21"),
       present: false,
       studentId: students[2].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-27"),
+      date: new Date("2025-10-21"),
       present: true,
       studentId: students[3].id,
       lessonId: 1,
     },
     {
-      date: new Date("2025-09-27"),
+      date: new Date("2025-10-21"),
       present: true,
       studentId: students[4].id,
       lessonId: 1,
@@ -1207,44 +1274,79 @@ async function main() {
     await prisma.attendance.create({ data: attendance });
   }
 
-  // EVENT
+  // EVENT - Updated with upcoming exciting events
   const events = [
     {
-      title: "School Science Fair",
+      title: "🎃 Halloween Costume Parade & Contest",
       description:
-        "Annual science fair showcasing student projects and experiments",
-      startTime: new Date("2025-10-15T09:00:00"),
-      endTime: new Date("2025-10-15T16:00:00"),
+        "Dress up in your best costume! Prizes for most creative, scariest, and funniest costumes. Parade starts at noon.",
+      startTime: new Date("2025-10-31T12:00:00"),
+      endTime: new Date("2025-10-31T14:00:00"),
+      classId: null,
+    },
+    {
+      title: "🔬 Annual Science & Innovation Fair",
+      description:
+        "Student science projects, robotics demonstrations, and STEM workshops. Parents welcome!",
+      startTime: new Date("2025-11-08T09:00:00"),
+      endTime: new Date("2025-11-08T16:00:00"),
+      classId: null,
+    },
+    {
+      title: "👨‍👩‍👧 Parent-Teacher Conference - Grade 1",
+      description:
+        "Individual meetings to discuss student progress, achievements, and areas for improvement.",
+      startTime: new Date("2025-11-12T16:00:00"),
+      endTime: new Date("2025-11-12T20:00:00"),
       classId: 1,
     },
     {
-      title: "Parent-Teacher Conference",
+      title: "🏃 Inter-School Sports Championship",
       description:
-        "Meetings between parents and teachers to discuss student progress",
-      startTime: new Date("2025-10-20T18:00:00"),
-      endTime: new Date("2025-10-20T20:00:00"),
-      classId: 2,
+        "Track and field events, basketball, and soccer competitions. Wear your school colors!",
+      startTime: new Date("2025-11-15T08:00:00"),
+      endTime: new Date("2025-11-15T17:00:00"),
+      classId: null,
     },
     {
-      title: "Halloween Costume Contest",
-      description: "Fun costume contest for all grades during lunch break",
-      startTime: new Date("2025-10-31T12:00:00"),
-      endTime: new Date("2025-10-31T13:00:00"),
-      classId: 3,
+      title: "🎭 Fall Theatre Production - Peter Pan",
+      description:
+        "Drama club presents Peter Pan. Evening performance with refreshments available.",
+      startTime: new Date("2025-11-20T18:30:00"),
+      endTime: new Date("2025-11-20T21:00:00"),
+      classId: null,
     },
     {
-      title: "Winter Concert",
-      description: "School choir and band winter performance",
-      startTime: new Date("2025-12-15T19:00:00"),
-      endTime: new Date("2025-12-15T21:00:00"),
-      classId: 4,
+      title: "🦃 Thanksgiving Assembly & Food Drive",
+      description:
+        "Community gratitude celebration. Bring non-perishable food items for local shelter.",
+      startTime: new Date("2025-11-22T10:00:00"),
+      endTime: new Date("2025-11-22T12:00:00"),
+      classId: null,
     },
     {
-      title: "Sports Day",
-      description: "Annual sports competition between classes",
-      startTime: new Date("2025-11-10T08:00:00"),
-      endTime: new Date("2025-11-10T15:00:00"),
-      classId: 5,
+      title: "📚 Book Fair & Author Meet",
+      description:
+        "Scholastic book fair with special guest author. Book signing and reading session.",
+      startTime: new Date("2025-11-25T09:00:00"),
+      endTime: new Date("2025-11-25T15:00:00"),
+      classId: null,
+    },
+    {
+      title: "🎄 Winter Concert Rehearsal - Grade 5",
+      description:
+        "Mandatory rehearsal for winter concert participants. Bring your instruments!",
+      startTime: new Date("2025-12-02T15:00:00"),
+      endTime: new Date("2025-12-02T17:00:00"),
+      classId: 9,
+    },
+    {
+      title: "🎅 Holiday Winter Concert",
+      description:
+        "School choir, band, and orchestra winter performance. Festive celebration for all!",
+      startTime: new Date("2025-12-18T19:00:00"),
+      endTime: new Date("2025-12-18T21:00:00"),
+      classId: null,
     },
   ];
 
@@ -1252,49 +1354,77 @@ async function main() {
     await prisma.event.create({ data: event });
   }
 
-  // ANNOUNCEMENT
+  // ANNOUNCEMENT - Updated with current and relevant announcements
   const announcements = [
     {
-      title: "Homework Reminder",
+      title: "🎃 Halloween Tomorrow - Costume Guidelines",
       description:
-        "Please complete your math homework by Friday. Remember to show all your work!",
-      date: new Date("2025-09-20"),
-      classId: 1,
+        "Reminder: Halloween celebration tomorrow! Costumes must be school-appropriate (no weapons, scary masks, or gore). Parade starts at noon. Don't forget your candy bag!",
+      date: new Date("2025-10-30"),
+      classId: null,
     },
     {
-      title: "Field Trip Notice",
+      title: "📝 Mid-Term Progress Reports Available",
       description:
-        "Field trip to the Springfield Museum next Tuesday. Permission slips due by Friday.",
-      date: new Date("2025-09-21"),
-      classId: 3,
+        "Mid-term progress reports are now available in the parent portal. Please review and contact your teacher with any questions. Parent-teacher conferences scheduled for Nov 12.",
+      date: new Date("2025-10-28"),
+      classId: null,
     },
     {
-      title: "Library Books Due",
+      title: "🚌 Field Trip Permission Slips Due - Grade 3",
       description:
-        "All library books must be returned by Wednesday. Late fees will apply.",
-      date: new Date("2025-09-22"),
-      classId: 2,
-    },
-    {
-      title: "School Picture Day",
-      description:
-        "Individual and class photos will be taken tomorrow. Please dress nicely.",
-      date: new Date("2025-09-25"),
-      classId: 4,
-    },
-    {
-      title: "After-School Tutoring",
-      description:
-        "Free math tutoring available every Tuesday and Thursday after school.",
-      date: new Date("2025-09-26"),
+        "Reminder to Grade 3 parents: Science Museum field trip permission slips and $15 fee due by Friday, Nov 1st. Trip scheduled for Nov 8.",
+      date: new Date("2025-10-29"),
       classId: 5,
     },
     {
-      title: "Health Screening",
+      title: "📚 Library Book Returns - Overdue Notice",
       description:
-        "Vision and hearing screenings scheduled for next week. Please mark your calendars.",
-      date: new Date("2025-09-28"),
-      classId: 6,
+        "All overdue library books must be returned by Nov 5 to participate in the upcoming Book Fair. Late fees will be waived if returned by this date.",
+      date: new Date("2025-10-30"),
+      classId: null,
+    },
+    {
+      title: "🍂 Thanksgiving Food Drive Starts Monday",
+      description:
+        "Join us in giving back! Bring non-perishable food items for our community food drive from Nov 4-22. The class with most donations wins a pizza party!",
+      date: new Date("2025-11-01"),
+      classId: null,
+    },
+    {
+      title: "⚽ After-School Sports Program Registration Open",
+      description:
+        "Winter sports registration now open! Basketball, indoor soccer, and volleyball. Registration closes Nov 8. Forms available in the main office.",
+      date: new Date("2025-10-31"),
+      classId: null,
+    },
+    {
+      title: "💻 Free Coding Workshop - Grades 4-6",
+      description:
+        "Join our after-school coding workshop! Learn Python basics every Tuesday & Thursday 3:30-4:30 PM. Limited spots available. Sign up in the computer lab.",
+      date: new Date("2025-10-29"),
+      classId: 7,
+    },
+    {
+      title: "🎭 Theatre Auditions This Week",
+      description:
+        "Peter Pan auditions Nov 1-3 after school in the auditorium. All students welcome! No experience necessary. Scripts available in the drama room.",
+      date: new Date("2025-10-28"),
+      classId: null,
+    },
+    {
+      title: "📸 School Picture Retakes - Nov 6",
+      description:
+        "Picture retakes scheduled for Thursday, Nov 6. If you were absent or want a retake, wear your best smile! No need to pre-order.",
+      date: new Date("2025-10-31"),
+      classId: null,
+    },
+    {
+      title: "🚨 Early Dismissal - Professional Development Day",
+      description:
+        "Reminder: Early dismissal at 1:00 PM on Friday, Nov 8 for teacher professional development. After-school programs and buses will run on early schedule.",
+      date: new Date("2025-11-04"),
+      classId: null,
     },
   ];
 
@@ -1370,6 +1500,73 @@ async function main() {
 
   for (const feeStructure of feeStructures) {
     await prisma.feeStructure.create({ data: feeStructure });
+  }
+
+  // FEE RECORDS - Sample fee records for students
+  const feeRecords = [
+    // November tuition fees for Grade 1 students
+    {
+      studentId: students[0].id,
+      feeStructureId: 2,
+      amountDue: 450.0,
+      amountPaid: 450.0,
+      status: "PAID" as const,
+      dueDate: new Date("2025-11-05"),
+    },
+    {
+      studentId: students[1].id,
+      feeStructureId: 2,
+      amountDue: 450.0,
+      amountPaid: 0,
+      status: "PENDING" as const,
+      dueDate: new Date("2025-11-05"),
+    },
+    {
+      studentId: students[2].id,
+      feeStructureId: 2,
+      amountDue: 450.0,
+      amountPaid: 225.0,
+      status: "PARTIAL" as const,
+      dueDate: new Date("2025-11-05"),
+    },
+    // Transportation fees
+    {
+      studentId: students[0].id,
+      feeStructureId: 7,
+      amountDue: 120.0,
+      amountPaid: 120.0,
+      status: "PAID" as const,
+      dueDate: new Date("2025-11-05"),
+    },
+    {
+      studentId: students[3].id,
+      feeStructureId: 7,
+      amountDue: 120.0,
+      amountPaid: 0,
+      status: "PENDING" as const,
+      dueDate: new Date("2025-11-05"),
+    },
+    // Lab fees for semester
+    {
+      studentId: students[8].id,
+      feeStructureId: 5,
+      amountDue: 200.0,
+      amountPaid: 200.0,
+      status: "PAID" as const,
+      dueDate: new Date("2025-11-15"),
+    },
+    {
+      studentId: students[9].id,
+      feeStructureId: 5,
+      amountDue: 200.0,
+      amountPaid: 100.0,
+      status: "PARTIAL" as const,
+      dueDate: new Date("2025-11-15"),
+    },
+  ];
+
+  for (const feeRecord of feeRecords) {
+    await prisma.feeRecord.create({ data: feeRecord });
   }
 
   console.log("Seeding completed successfully with realistic data.");
