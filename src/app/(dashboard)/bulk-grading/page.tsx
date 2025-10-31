@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import BulkGradingInterface from "@/components/BulkGradingInterface";
 
+export const dynamic = "force-dynamic";
+
 const BulkGradingPage = async () => {
   const { userId, sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;

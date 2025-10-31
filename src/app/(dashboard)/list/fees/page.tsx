@@ -14,6 +14,8 @@ import {
 } from "@prisma/client";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 type FeeRecordList = FeeRecord & {
   student: Student;
   feeStructure: FeeStructure;
@@ -219,3 +221,4 @@ const FeeListPage = async ({
 };
 
 export default FeeListPage;
+

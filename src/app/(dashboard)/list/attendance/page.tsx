@@ -9,6 +9,8 @@ import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import AttendanceForm from "@/components/AttendanceForm";
 
+export const dynamic = "force-dynamic";
+
 type AttendanceList = {
   id: number;
   date: Date;
@@ -248,3 +250,4 @@ const AttendanceListPage = async ({
 };
 
 export default AttendanceListPage;
+

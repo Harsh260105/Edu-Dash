@@ -8,6 +8,8 @@ import { Class, Prisma, Teacher } from "@prisma/client";
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 
+export const dynamic = "force-dynamic";
+
 type ClassList = Class & { supervisor: Teacher };
 
 const ClassListPage = async ({
@@ -138,3 +140,4 @@ const ClassListPage = async ({
 };
 
 export default ClassListPage;
+

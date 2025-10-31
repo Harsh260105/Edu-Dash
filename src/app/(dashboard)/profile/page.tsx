@@ -2,6 +2,8 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 const ProfilePage = async () => {
   const { userId, sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;

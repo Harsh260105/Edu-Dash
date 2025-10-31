@@ -2,6 +2,8 @@ import Announcements from "@/components/Announcements";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
 import { auth } from "@clerk/nextjs/server";
 
+export const dynamic = "force-dynamic";
+
 const TeacherPage = () => {
   const { userId } = auth();
   

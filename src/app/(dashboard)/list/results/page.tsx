@@ -6,8 +6,9 @@ import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma } from "@prisma/client";
 import Image from "next/image";
-
 import { auth } from "@clerk/nextjs/server";
+
+export const dynamic = "force-dynamic";
 
 type ResultList = {
   id: number;
@@ -234,3 +235,4 @@ const renderRow = (item: ResultList) => (
 };
 
 export default ResultListPage;
+

@@ -6,8 +6,9 @@ import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Parent, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
-
 import { auth } from "@clerk/nextjs/server";
+
+export const dynamic = "force-dynamic";
 
 type ParentList = Parent & { students: Student[] };
 
@@ -141,3 +142,4 @@ const renderRow = (item: ParentList) => (
 };
 
 export default ParentListPage;
+
